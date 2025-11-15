@@ -152,16 +152,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
   };
 
   const formatDateNumber = (date: Date) => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // getMonth() returns 0-11
-    
-    // If it's the current month, just show the day number
-    if (date.getMonth() === currentMonth) {
-      return day.toString();
-    }
-    
-    // For previous months, show day.month format
-    return `${day}.${month}`;
+    return date.getDate().toString();
   };
 
   const getSeverityLabel = (value: number) => {
@@ -223,6 +214,15 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
 
   const canSave = markedAsFalse || severity > 0; // Can save if marked as false OR after selecting severity
 
+  // Check if any additional features are enabled
+  const hasAdditionalFeatures = 
+    trackableFeatures.hydration || 
+    trackableFeatures.caffeine || 
+    trackableFeatures.alcohol || 
+    trackableFeatures.exercise || 
+    trackableFeatures.relaxing || 
+    trackableFeatures.stress;
+
   return (
     <div className="flex flex-col h-full">
       <SheetHeader className="px-6 pt-6">
@@ -252,7 +252,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
         {/* Date Selection - Scrollable Year View */}
         <div>
-          <Label className="text-slate-700 mb-3 block">Select Date</Label>
+          <Label className="text-slate-700 mb-2 block">Select Date</Label>
           <div 
             ref={dateScrollRef}
             className="flex gap-2 overflow-x-auto pb-2 scroll-smooth"
@@ -263,11 +263,9 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
               const isFirstOfMonth = date.getDate() === 1;
               return (
                 <div key={index} className="flex-shrink-0">
-                  {isFirstOfMonth && (
-                    <div className="text-xs text-slate-400 mb-1 px-1">
-                      {date.toLocaleDateString('en-US', { month: 'short' })}
-                    </div>
-                  )}
+                  <div className="text-xs text-slate-400 mb-2 px-1 h-4">
+                    {isFirstOfMonth && date.toLocaleDateString('en-US', { month: 'short' })}
+                  </div>
                   <button
                     onClick={() => setSelectedDateIndex(index)}
                     className={`flex flex-col items-center gap-1 px-3 py-3 rounded-xl border-2 transition-all ${
@@ -399,7 +397,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
         )}
 
         {/* Additional Metrics - Only shown if not marked as false */}
-        {!markedAsFalse && (
+        {!markedAsFalse && hasAdditionalFeatures && (
           <div className="space-y-3">
             <Label className="text-slate-700 block">Additional Information (Optional)</Label>
             
@@ -493,23 +491,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
               </div>
             )}
 
-            {/* Screen Time */}
-            {trackableFeatures.screenTime && (
-              <div className="flex items-center p-3 bg-white rounded-lg border border-slate-200">
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <Smartphone className="text-teal-600 flex-shrink-0" size={18} />
-                  <span className="text-sm text-slate-700">Devices</span>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <HorizontalPicker
-                    values={Array.from({ length: 25 }, (_, i) => i * 0.5)}
-                    selectedValue={screenTime}
-                    onValueChange={(value) => setScreenTime(value as number | null)}
-                  />
-                  <span className="text-xs text-slate-500 w-16 text-left">hours</span>
-                </div>
-              </div>
-            )}
+            {/* Screen Time - REMOVED: Tracked automatically */}
 
             {/* Stress */}
             {trackableFeatures.stress && (

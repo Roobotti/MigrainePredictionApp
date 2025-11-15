@@ -84,15 +84,24 @@ export function SettingsPage() {
     }
   });
 
-  const [trackableFeatures, setTrackableFeatures] = useState<TrackableFeatures>({
-    hydration: true,
-    stress: true,
-    caffeine: true,
-    alcohol: true,
-    screenTime: true,
-    exercise: true,
-    relaxing: true
-  });
+  // Load trackable features from localStorage (set during onboarding)
+  const loadTrackableFeatures = (): TrackableFeatures => {
+    const saved = localStorage.getItem("trackable_features");
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    return {
+      hydration: true,
+      stress: true,
+      caffeine: true,
+      alcohol: true,
+      screenTime: true,
+      exercise: true,
+      relaxing: true
+    };
+  };
+
+  const [trackableFeatures, setTrackableFeatures] = useState<TrackableFeatures>(loadTrackableFeatures());
 
   const [featureReminders, setFeatureReminders] = useState<TrackableFeatureReminders>({
     hydration: ["09:00", "12:00", "15:00"],
@@ -624,12 +633,7 @@ export function SettingsPage() {
             "Track alcohol intake"
           )}
 
-          {renderFeatureCard(
-            "screenTime",
-            <Smartphone className="text-teal-600" size={20} />,
-            "Screen Time",
-            "Monitor daily screen exposure"
-          )}
+          {/* Screen Time - Tracked automatically, no toggle needed */}
 
           {renderFeatureCard(
             "exercise",

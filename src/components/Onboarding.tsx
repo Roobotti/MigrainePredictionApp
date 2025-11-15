@@ -62,18 +62,6 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       description: "Does extended screen use trigger migraines?",
       defaultWeight: 5,
       weight: 5,
-      isOptional: true,
-      isTracked: true,
-    },
-    {
-      id: "caffeine",
-      name: "Caffeine",
-      icon: <Coffee className="text-teal-600" size={32} />,
-      description: "How does caffeine intake affect you?",
-      defaultWeight: 4,
-      weight: 4,
-      isOptional: true,
-      isTracked: true,
     },
     {
       id: "hydration",
@@ -92,6 +80,16 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       description: "How much does stress contribute to your migraines?",
       defaultWeight: 7,
       weight: 7,
+      isOptional: true,
+      isTracked: true,
+    },
+    {
+      id: "caffeine",
+      name: "Caffeine",
+      icon: <Coffee className="text-teal-600" size={32} />,
+      description: "How does caffeine intake affect you?",
+      defaultWeight: 4,
+      weight: 4,
       isOptional: true,
       isTracked: true,
     },
@@ -165,7 +163,6 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             'stress': 'stress',
             'caffeine': 'caffeine',
             'alcohol': 'alcohol',
-            'screen': 'screenTime',
             'exercise': 'exercise',
             'relaxing': 'relaxing'
           };
@@ -176,6 +173,9 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         }
         return acc;
       }, {} as Record<string, boolean>);
+      
+      // Add screenTime as always enabled (automatic tracking)
+      trackableFeatures.screenTime = true;
       
       onComplete(weights, trackableFeatures);
     }
@@ -202,8 +202,9 @@ export function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   return (
-    <div className="absolute inset-0 z-50 bg-gradient-to-b from-teal-50 to-indigo-50 overflow-auto">
-      <div className="min-h-screen p-4 pb-24">
+    <div className="absolute inset-0 z-50 bg-gradient-to-b from-teal-50 to-indigo-50 flex flex-col">
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-auto p-4 pb-24">
         {/* Progress Bar */}
         <div className="max-w-md mx-auto mb-6 pt-4">
           <div className="flex items-center justify-between mb-2">
@@ -293,7 +294,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                               </Label>
                               <p className="text-xs text-slate-500 mt-1">
                                 {triggers[currentStep - 1].isTracked 
-                                  ? "You'll be able to log this data for each migraine"
+                                  ? "You'll be able to track this metric each day"
                                   : "This metric won't appear in your migraine reports"}
                               </p>
                             </div>
@@ -382,27 +383,27 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               </motion.div>
             )}
           </AnimatePresence>
+        </div>
+      </div>
 
-          {/* Navigation Buttons */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200">
-            <div className="max-w-md mx-auto flex gap-3">
-              {currentStep > 0 && (
-                <Button
-                  variant="outline"
-                  onClick={() => setCurrentStep((prev) => prev - 1)}
-                  className="flex-1"
-                >
-                  Back
-                </Button>
-              )}
-              <Button
-                onClick={handleNext}
-                className="flex-1 bg-teal-600 hover:bg-teal-700"
-              >
-                {currentStep === triggers.length ? "Get Started" : "Next"}
-              </Button>
-            </div>
-          </div>
+      {/* Navigation Buttons - Fixed at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-200">
+        <div className="max-w-md mx-auto flex gap-3">
+          {currentStep > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => setCurrentStep((prev) => prev - 1)}
+              className="flex-1"
+            >
+              Back
+            </Button>
+          )}
+          <Button
+            onClick={handleNext}
+            className="flex-1 bg-teal-600 hover:bg-teal-700"
+          >
+            {currentStep === triggers.length ? "Get Started" : "Next"}
+          </Button>
         </div>
       </div>
     </div>

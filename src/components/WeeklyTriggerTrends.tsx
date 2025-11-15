@@ -3,6 +3,12 @@ import { Card } from "./ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { TrendingUp } from "lucide-react";
 
+interface MigraineCalendarData {
+  month: number; // 0-11 (9 = October, 10 = November)
+  day: number;
+  severity: "severe" | "moderate" | "mild";
+}
+
 interface MigraineReport {
   date: string | Date;
   severity: number;
@@ -30,80 +36,139 @@ export function WeeklyTriggerTrends() {
   const [weeklyData, setWeeklyData] = useState<WeekData[]>([]);
 
   useEffect(() => {
+    // First try to get data from calendar (primary source)
+    const calendarDataJson = localStorage.getItem("migraine_calendar_data");
+    
+    if (calendarDataJson) {
+      try {
+        const calendarData: MigraineCalendarData[] = JSON.parse(calendarDataJson);
+        
+        // Convert calendar data to report format with estimated values based on severity
+        const reports: MigraineReport[] = calendarData.map((item) => {
+          const date = new Date(2025, item.month, item.day);
+          
+          // Generate consistent values based on severity (matching calendar logic)
+          let hydration, stress, caffeine, screenTime;
+          
+          if (item.severity === "severe") {
+            hydration = 3; // Low hydration = higher risk
+            stress = 8;
+            caffeine = 7;
+            screenTime = 8;
+          } else if (item.severity === "moderate") {
+            hydration = 5;
+            stress = 6;
+            caffeine = 5;
+            screenTime = 6;
+          } else { // mild
+            hydration = 7;
+            stress = 4;
+            caffeine = 4;
+            screenTime = 5;
+          }
+          
+          return {
+            date,
+            severity: item.severity === "severe" ? 9 : item.severity === "moderate" ? 5 : 3,
+            symptoms: {
+              aura: false,
+              vomiting: item.severity === "severe",
+              nausea: item.severity !== "mild",
+            },
+            hydration,
+            stress,
+            caffeine,
+            screenTime,
+          };
+        });
+        
+        if (reports.length > 0) {
+          processReports(reports);
+          return;
+        }
+      } catch (error) {
+        console.error("Error parsing calendar data:", error);
+      }
+    }
+    
+    // Fallback to migraine_reports if calendar data not available
     const reportsJson = localStorage.getItem("migraine_reports");
     if (!reportsJson) return;
 
     try {
       const reports: MigraineReport[] = JSON.parse(reportsJson);
       if (reports.length === 0) return;
-
-      // Get current month's reports
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-
-      const monthReports = reports.filter((report) => {
-        const reportDate = new Date(report.date);
-        return (
-          reportDate.getMonth() === currentMonth &&
-          reportDate.getFullYear() === currentYear
-        );
-      });
-
-      if (monthReports.length === 0) return;
-
-      // Group reports by week
-      const weekGroups: { [key: string]: MigraineReport[] } = {};
-
-      monthReports.forEach((report) => {
-        const date = new Date(report.date);
-        // Get week number within the month (1-5)
-        const dayOfMonth = date.getDate();
-        const weekNum = Math.ceil(dayOfMonth / 7);
-        const weekKey = `Week ${weekNum}`;
-
-        if (!weekGroups[weekKey]) {
-          weekGroups[weekKey] = [];
-        }
-        weekGroups[weekKey].push(report);
-      });
-
-      // Calculate average trigger levels for each week
-      const weeklyAverages: WeekData[] = Object.entries(weekGroups)
-        .map(([week, reports]) => {
-          const weekNum = parseInt(week.split(" ")[1]);
-          
-          const avgHydration = reports.reduce((sum, r) => sum + (r.hydration || 5), 0) / reports.length;
-          const avgStress = reports.reduce((sum, r) => sum + (r.stress || 5), 0) / reports.length;
-          const avgCaffeine = reports.reduce((sum, r) => sum + (r.caffeine || 5), 0) / reports.length;
-          const avgScreenTime = reports.reduce((sum, r) => sum + (r.screenTime || 5), 0) / reports.length;
-          
-          // Simulated sleep data showing improvement over weeks
-          // Higher values = better sleep (less risk), starts poor and improves
-          const baseSleep = 3.5; // Poor sleep in earlier weeks
-          const improvement = (weekNum - 1) * 0.8; // 0.8 point improvement per week
-          const avgSleep = Math.min(baseSleep + improvement, 7.5); // Cap at good sleep level
-
-          return {
-            week,
-            hydration: parseFloat(avgHydration.toFixed(1)),
-            stress: parseFloat(avgStress.toFixed(1)),
-            caffeine: parseFloat(avgCaffeine.toFixed(1)),
-            screenTime: parseFloat(avgScreenTime.toFixed(1)),
-            sleep: parseFloat(avgSleep.toFixed(1)),
-          };
-        })
-        .sort((a, b) => {
-          const weekNumA = parseInt(a.week.split(" ")[1]);
-          const weekNumB = parseInt(b.week.split(" ")[1]);
-          return weekNumA - weekNumB;
-        });
-
-      setWeeklyData(weeklyAverages);
+      processReports(reports);
     } catch (error) {
       console.error("Error calculating weekly trends:", error);
     }
   }, []);
+  
+  const processReports = (reports: MigraineReport[]) => {
+    // Get current month's reports
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const monthReports = reports.filter((report) => {
+      const reportDate = new Date(report.date);
+      return (
+        reportDate.getMonth() === currentMonth &&
+        reportDate.getFullYear() === currentYear
+      );
+    });
+
+    if (monthReports.length === 0) return;
+
+    // Group reports by week
+    const weekGroups: { [key: string]: MigraineReport[] } = {};
+
+    monthReports.forEach((report) => {
+      const date = new Date(report.date);
+      // Get week number within the month (1-5)
+      const dayOfMonth = date.getDate();
+      const weekNum = Math.ceil(dayOfMonth / 7);
+      const weekKey = `Week ${weekNum}`;
+
+      if (!weekGroups[weekKey]) {
+        weekGroups[weekKey] = [];
+      }
+      weekGroups[weekKey].push(report);
+    });
+
+    // Calculate average trigger levels for each week
+    const weeklyAverages: WeekData[] = Object.entries(weekGroups)
+      .map(([week, reports]) => {
+        const weekNum = parseInt(week.split(" ")[1]);
+        
+        const avgHydration = reports.reduce((sum, r) => sum + (r.hydration || 5), 0) / reports.length;
+        const avgStress = reports.reduce((sum, r) => sum + (r.stress || 5), 0) / reports.length;
+        const avgCaffeine = reports.reduce((sum, r) => sum + (r.caffeine || 5), 0) / reports.length;
+        const avgScreenTime = reports.reduce((sum, r) => sum + (r.screenTime || 5), 0) / reports.length;
+        
+        // Simulated sleep data showing improvement over weeks
+        // Higher values = better sleep (less risk), starts poor and improves
+        const baseSleep = 3.5; // Poor sleep in earlier weeks
+        const improvement = (weekNum - 1) * 0.8; // 0.8 point improvement per week
+        const avgSleep = Math.min(baseSleep + improvement, 7.5); // Cap at good sleep level
+
+        return {
+          week,
+          hydration: parseFloat(avgHydration.toFixed(1)),
+          stress: parseFloat(avgStress.toFixed(1)),
+          caffeine: parseFloat(avgCaffeine.toFixed(1)),
+          screenTime: parseFloat(avgScreenTime.toFixed(1)),
+          sleep: parseFloat(avgSleep.toFixed(1)),
+        };
+      })
+      .sort((a, b) => {
+        const weekNumA = parseInt(a.week.split(" ")[1]);
+        const weekNumB = parseInt(b.week.split(" ")[1]);
+        return weekNumA - weekNumB;
+      });
+
+    setWeeklyData(weeklyAverages);
+  };
 
   if (weeklyData.length === 0) {
     return (
