@@ -53,7 +53,7 @@ export function ScreenSaver({
       initial={isFirstTime ? { y: 0 } : false}
       exit={{ y: "-100%" }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
-      className="fixed inset-0 z-50 bg-black"
+      className="absolute inset-0 z-50 bg-black"
       onClick={handleTouchScreen}
     >
       {/* Touch to start prompt - only on first time */}

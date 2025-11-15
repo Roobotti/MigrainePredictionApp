@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 
 export function LoadingScreen() {
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-b from-teal-50 to-teal-100 flex items-center justify-center">
+    <div className="absolute inset-0 z-50 bg-gradient-to-b from-teal-50 to-teal-100 flex items-center justify-center">
       <div className="text-center">
         {/* Pulsing Logo - Lightning Strike M */}
         <motion.div

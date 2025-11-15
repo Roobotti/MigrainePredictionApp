@@ -115,7 +115,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-b from-teal-50 to-indigo-50 overflow-auto">
+    <div className="absolute inset-0 z-50 bg-gradient-to-b from-teal-50 to-indigo-50 overflow-auto">
       <div className="min-h-screen p-4 pb-24">
         {/* Progress Bar */}
         <div className="max-w-md mx-auto mb-6 pt-4">

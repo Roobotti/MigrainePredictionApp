@@ -10,6 +10,7 @@ import { AddMigraineReport } from "./components/AddMigraineReport";
 import { ScreenSaver } from "./components/ScreenSaver";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { Onboarding } from "./components/Onboarding";
+import { MobileViewport } from "./components/MobileViewport";
 import { Toaster } from "./components/ui/sonner";
 import { AnimatePresence } from "motion/react";
 import {
@@ -24,6 +25,19 @@ import {
 type AppState = "first-screen-saver" | "loading" | "onboarding" | "main";
 
 export default function App() {
+  // Set viewport meta tag for proper mobile rendering
+  useEffect(() => {
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'viewport';
+      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+      document.head.appendChild(meta);
+    }
+  }, []);
+
   const [appState, setAppState] = useState<AppState>("first-screen-saver");
   const [activeTab, setActiveTab] = useState("calendar");
   const [screenSaverOpen, setScreenSaverOpen] = useState(false);
@@ -88,53 +102,64 @@ export default function App() {
   // Render based on app state
   if (appState === "first-screen-saver") {
     return (
-      <ScreenSaver
-        isOpen={true}
-        onClose={() => {}}
-        onNotificationTap={() => {}}
-        isFirstTime={true}
-        onTouchDismiss={handleFirstScreenTouch}
-      />
+      <MobileViewport>
+        <ScreenSaver
+          isOpen={true}
+          onClose={() => {}}
+          onNotificationTap={() => {}}
+          isFirstTime={true}
+          onTouchDismiss={handleFirstScreenTouch}
+        />
+      </MobileViewport>
     );
   }
 
   if (appState === "loading") {
-    return <LoadingScreen />;
+    return (
+      <MobileViewport>
+        <LoadingScreen />
+      </MobileViewport>
+    );
   }
 
   if (appState === "onboarding") {
-    return <Onboarding onComplete={handleOnboardingComplete} />;
+    return (
+      <MobileViewport>
+        <Onboarding onComplete={handleOnboardingComplete} />
+      </MobileViewport>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      <Toaster />
-      
-      {/* Screen Saver for testing */}
-      <AnimatePresence>
-        {screenSaverOpen && (
-          <ScreenSaver 
-            isOpen={screenSaverOpen}
-            onClose={() => setScreenSaverOpen(false)}
-            onNotificationTap={handleNotificationTap}
-            isFirstTime={false}
-          />
+    <MobileViewport>
+      <div className="flex flex-col h-full bg-gradient-to-b from-slate-50 to-slate-100 overflow-hidden">
+        <Toaster />
+        
+        {/* Screen Saver for testing */}
+        <AnimatePresence>
+          {screenSaverOpen && (
+            <ScreenSaver 
+              isOpen={screenSaverOpen}
+              onClose={() => setScreenSaverOpen(false)}
+              onNotificationTap={handleNotificationTap}
+              isFirstTime={false}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Floating Screen Saver Button */}
+        {!screenSaverOpen && (
+          <button
+            onClick={() => setScreenSaverOpen(true)}
+            className="fixed bottom-24 right-4 z-40 p-3 bg-indigo-600/40 hover:bg-indigo-600/60 text-white rounded-full shadow-lg hover:shadow-xl transition-all active:scale-95"
+            aria-label="Test screen saver"
+          >
+            <Moon size={20} />
+          </button>
         )}
-      </AnimatePresence>
 
-      {/* Floating Screen Saver Button */}
-      {!screenSaverOpen && (
-        <button
-          onClick={() => setScreenSaverOpen(true)}
-          className="fixed bottom-24 right-4 z-40 p-3 bg-indigo-600/40 hover:bg-indigo-600/60 text-white rounded-full shadow-lg hover:shadow-xl transition-all active:scale-95"
-          aria-label="Test screen saver"
-        >
-          <Moon size={20} />
-        </button>
-      )}
-
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-4 sticky top-0 z-10 shadow-sm">
+        {/* Header */}
+        <header className="flex-shrink-0 bg-white border-b border-slate-200 px-4 py-4 z-10 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <svg
@@ -198,87 +223,93 @@ export default function App() {
         </SheetContent>
       </Sheet>
 
-      {/* Main Content */}
-      <main className="pb-20">
+      {/* Main Content - Scrollable Area */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden w-full">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsContent value="risk" className="mt-0">
+          <TabsContent value="risk" className="mt-0 h-full w-full">
             <RiskLevelPage />
           </TabsContent>
           
-          <TabsContent value="calendar" className="mt-0">
+          <TabsContent value="calendar" className="mt-0 h-full w-full">
             <CalendarPage 
               onAddMigraineForDate={handleAddMigraineForDate}
               onEditMigraine={handleEditMigraine}
             />
           </TabsContent>
           
-          <TabsContent value="analytics" className="mt-0">
+          <TabsContent value="analytics" className="mt-0 h-full w-full">
             <AnalyticsPage />
           </TabsContent>
           
-          <TabsContent value="info" className="mt-0">
+          <TabsContent value="info" className="mt-0 h-full w-full">
             <InfoPage />
           </TabsContent>
         </Tabs>
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg">
-        <div className="relative grid grid-cols-5 h-16">
-          <button
-            onClick={() => setActiveTab("risk")}
-            className={`flex flex-col items-center justify-center gap-1 transition-colors ${
-              activeTab === "risk" ? "text-teal-600" : "text-slate-400"
-            }`}
-          >
-            <Activity size={20} />
-            <span className="text-xs">Risk</span>
-          </button>
-          
-          <button
-            onClick={() => setActiveTab("calendar")}
-            className={`flex flex-col items-center justify-center gap-1 transition-colors ${
-              activeTab === "calendar" ? "text-teal-600" : "text-slate-400"
-            }`}
-          >
-            <Calendar size={20} />
-            <span className="text-xs">Calendar</span>
-          </button>
-          
-          {/* Center Add Button */}
-          <div className="flex items-center justify-center">
+        {/* Bottom Navigation */}
+        <nav 
+          className="flex-shrink-0 bg-white border-t border-slate-200 shadow-lg"
+          style={{
+            paddingBottom: 'max(0px, env(safe-area-inset-bottom))'
+          }}
+        >
+          <div className="relative grid grid-cols-5 h-16">
             <button
-              onClick={() => setAddReportOpen(true)}
-              className="absolute -top-4 bg-teal-600 hover:bg-teal-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all active:scale-95 z-10"
-              aria-label="Add migraine report"
+              onClick={() => setActiveTab("risk")}
+              className={`flex flex-col items-center justify-center gap-1 transition-colors ${
+                activeTab === "risk" ? "text-teal-600" : "text-slate-400"
+              }`}
             >
-              <Plus size={28} />
+              <Activity size={20} />
+              <span className="text-xs">Risk</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab("calendar")}
+              className={`flex flex-col items-center justify-center gap-1 transition-colors ${
+                activeTab === "calendar" ? "text-teal-600" : "text-slate-400"
+              }`}
+            >
+              <Calendar size={20} />
+              <span className="text-xs">Calendar</span>
+            </button>
+            
+            {/* Center Add Button */}
+            <div className="flex items-center justify-center">
+              <button
+                onClick={() => setAddReportOpen(true)}
+                className="absolute -top-4 bg-teal-600 hover:bg-teal-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all active:scale-95 z-10"
+                aria-label="Add migraine report"
+              >
+                <Plus size={28} />
+              </button>
+            </div>
+            
+            <button
+              onClick={() => setActiveTab("analytics")}
+              className={`flex flex-col items-center justify-center gap-1 transition-colors ${
+                activeTab === "analytics" ? "text-teal-600" : "text-slate-400"
+              }`}
+            >
+              <BarChart3 size={20} />
+              <span className="text-xs">Analytics</span>
+            </button>
+            
+            <button
+              onClick={() => setActiveTab("info")}
+              className={`flex flex-col items-center justify-center gap-1 transition-colors relative ${
+                activeTab === "info" ? "text-teal-600" : "text-slate-400"
+              }`}
+            >
+              <div className="relative">
+                <Info size={20} />
+              </div>
+              <span className="text-xs">Info</span>
             </button>
           </div>
-          
-          <button
-            onClick={() => setActiveTab("analytics")}
-            className={`flex flex-col items-center justify-center gap-1 transition-colors ${
-              activeTab === "analytics" ? "text-teal-600" : "text-slate-400"
-            }`}
-          >
-            <BarChart3 size={20} />
-            <span className="text-xs">Analytics</span>
-          </button>
-          
-          <button
-            onClick={() => setActiveTab("info")}
-            className={`flex flex-col items-center justify-center gap-1 transition-colors relative ${
-              activeTab === "info" ? "text-teal-600" : "text-slate-400"
-            }`}
-          >
-            <div className="relative">
-              <Info size={20} />
-            </div>
-            <span className="text-xs">Info</span>
-          </button>
-        </div>
-      </nav>
-    </div>
+        </nav>
+      </div>
+    </MobileViewport>
   );
 }

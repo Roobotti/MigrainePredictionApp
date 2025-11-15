@@ -388,9 +388,9 @@ export function AnalyticsPage() {
         <p className="text-sm text-slate-500 mb-3">
           Generate a medical report of your migraine data
         </p>
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
           <Select value={exportPeriod} onValueChange={setExportPeriod}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-full sm:w-40">
               <SelectValue placeholder="Select period" />
             </SelectTrigger>
             <SelectContent>
@@ -400,9 +400,9 @@ export function AnalyticsPage() {
               <SelectItem value="all">All Time</SelectItem>
             </SelectContent>
           </Select>
-          <Button onClick={generateReport} className="bg-teal-600 hover:bg-teal-700">
+          <Button onClick={generateReport} className="bg-teal-600 hover:bg-teal-700 w-full sm:w-auto">
             <FileText className="mr-2 h-4 w-4" />
-            View Report
+            <span className="whitespace-nowrap">View Report</span>
           </Button>
         </div>
       </Card>

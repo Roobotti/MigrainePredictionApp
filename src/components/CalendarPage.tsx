@@ -321,19 +321,19 @@ export function CalendarPage({ onAddMigraineForDate, onEditMigraine }: CalendarP
   return (
     <div className="p-4 space-y-4 pb-24">
       {/* Legend */}
-      <Card className="p-4 bg-white">
-        <div className="flex flex-wrap justify-around">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-red-500"></div>
-            <span className="text-sm text-slate-600">Severe</span>
+      <Card className="p-3 sm:p-4 bg-white">
+        <div className="flex flex-wrap justify-around gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-500 flex-shrink-0"></div>
+            <span className="text-xs sm:text-sm text-slate-600">Severe</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-amber-500"></div>
-            <span className="text-sm text-slate-600">Moderate</span>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-amber-500 flex-shrink-0"></div>
+            <span className="text-xs sm:text-sm text-slate-600">Moderate</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded-full bg-yellow-400"></div>
-            <span className="text-sm text-slate-600">Mild</span>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-yellow-400 flex-shrink-0"></div>
+            <span className="text-xs sm:text-sm text-slate-600">Mild</span>
           </div>
         </div>
       </Card>

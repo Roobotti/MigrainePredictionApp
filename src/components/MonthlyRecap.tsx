@@ -141,41 +141,41 @@ export function MonthlyRecap() {
 
   if (!stats) {
     return (
-      <Card className="p-6 bg-gradient-to-br from-teal-500 to-cyan-600 text-white">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-white/20 p-2 rounded-full">
-              <TrendingUp size={28} className="text-white" />
+      <Card className="p-4 sm:p-6 bg-gradient-to-br from-teal-500 to-cyan-600 text-white">
+        <div className="flex items-center justify-between mb-4 gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <div className="bg-white/20 p-1.5 sm:p-2 rounded-full flex-shrink-0">
+              <TrendingUp size={24} className="text-white sm:w-7 sm:h-7" />
             </div>
-            <div>
-              <h2 className="mb-0.5">Monthly Recap</h2>
-              <div className="flex items-center gap-1 text-sm text-teal-100">
-                <Calendar size={16} />
-                <span>{new Date(selectedMonth.year, selectedMonth.month).toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
+            <div className="min-w-0 flex-1">
+              <h2 className="mb-0.5 text-base sm:text-xl truncate">Monthly Recap</h2>
+              <div className="flex items-center gap-1 text-xs sm:text-sm text-teal-100">
+                <Calendar size={14} className="sm:w-4 sm:h-4 flex-shrink-0" />
+                <span className="truncate">{new Date(selectedMonth.year, selectedMonth.month).toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             <Button
               variant="ghost"
               size="icon"
               onClick={handlePreviousMonth}
-              className="text-white hover:bg-white/20"
+              className="text-white hover:bg-white/20 h-7 w-7 sm:h-8 sm:w-8"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={handleNextMonth}
               disabled={isCurrentMonth()}
-              className="text-white hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-white hover:bg-white/20 h-7 w-7 sm:h-8 sm:w-8 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={18} className="sm:w-5 sm:h-5" />
             </Button>
           </div>
         </div>
-        <p className="text-sm text-teal-100 text-center">No migraine data available for this month</p>
+        <p className="text-xs sm:text-sm text-teal-100 text-center">No migraine data available for this month</p>
       </Card>
     );
   }
@@ -194,66 +194,66 @@ export function MonthlyRecap() {
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-teal-500 to-cyan-600 text-white">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-white/20 p-2 rounded-full">
-            <TrendingUp size={28} className="text-white" />
+    <Card className="p-4 sm:p-6 bg-gradient-to-br from-teal-500 to-cyan-600 text-white">
+      <div className="flex items-center justify-between mb-4 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <div className="bg-white/20 p-1.5 sm:p-2 rounded-full flex-shrink-0">
+            <TrendingUp size={24} className="text-white sm:w-7 sm:h-7" />
           </div>
-          <div>
-            <h2 className="mb-0.5">Monthly Recap</h2>
-            <div className="flex items-center gap-1 text-sm text-teal-100">
-              <Calendar size={16} />
-              <span>{stats.monthName} {selectedMonth.year}</span>
+          <div className="min-w-0 flex-1">
+            <h2 className="mb-0.5 text-base sm:text-xl truncate">Monthly Recap</h2>
+            <div className="flex items-center gap-1 text-xs sm:text-sm text-teal-100">
+              <Calendar size={14} className="sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="truncate">{stats.monthName} {selectedMonth.year}</span>
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           <Button
             variant="ghost"
             size="icon"
             onClick={handlePreviousMonth}
-            className="text-white hover:bg-white/20 h-8 w-8"
+            className="text-white hover:bg-white/20 h-7 w-7 sm:h-8 sm:w-8"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={handleNextMonth}
             disabled={isCurrentMonth()}
-            className="text-white hover:bg-white/20 h-8 w-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="text-white hover:bg-white/20 h-7 w-7 sm:h-8 sm:w-8 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={18} className="sm:w-5 sm:h-5" />
           </Button>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-            <div className="flex items-center gap-2 mb-1">
-              <AlertCircle size={16} className="text-teal-200" />
-              <span className="text-xs text-teal-200">Total Migraines</span>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2.5 sm:p-3 border border-white/20">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+              <AlertCircle size={14} className="text-teal-200 flex-shrink-0 sm:w-4 sm:h-4" />
+              <span className="text-[0.65rem] sm:text-xs text-teal-200 leading-tight">Total Migraines</span>
             </div>
-            <p className="text-2xl">{stats.totalMigraines}</p>
+            <p className="text-xl sm:text-2xl">{stats.totalMigraines}</p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-            <div className="flex items-center gap-2 mb-1">
-              <Activity size={16} className="text-teal-200" />
-              <span className="text-xs text-teal-200">Avg. Intensity</span>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2.5 sm:p-3 border border-white/20">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+              <Activity size={14} className="text-teal-200 flex-shrink-0 sm:w-4 sm:h-4" />
+              <span className="text-[0.65rem] sm:text-xs text-teal-200 leading-tight">Avg. Intensity</span>
             </div>
-            <p className={`text-2xl ${getIntensityColor(stats.averageIntensity)}`}>
+            <p className={`text-base sm:text-2xl ${getIntensityColor(stats.averageIntensity)}`}>
               {getIntensityText(stats.averageIntensity)}
             </p>
           </div>
         </div>
 
         {/* Top Risk Factors */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-          <h3 className="text-sm mb-3 text-teal-100">Top Risk Factors</h3>
+        <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-white/20">
+          <h3 className="text-xs sm:text-sm mb-2 sm:mb-3 text-teal-100">Top Risk Factors</h3>
           <div className="space-y-2">
             {stats.topRiskFactors.slice(0, 5).map((factor, index) => {
               // Calculate occurrence count (capped at total migraines)
@@ -264,13 +264,13 @@ export function MonthlyRecap() {
               
               return (
                 <div key={factor.name} className="flex items-center gap-2">
-                  <div className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 text-xs">
+                  <div className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 text-xs flex-shrink-0">
                     {index + 1}
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-white">{factor.name}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm text-white truncate">{factor.name}</p>
                   </div>
-                  <div className="text-xs text-teal-200">
+                  <div className="text-[0.65rem] sm:text-xs text-teal-200 whitespace-nowrap">
                     {occurrenceCount}/{stats.totalMigraines}
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export function MonthlyRecap() {
           </div>
         </div>
 
-        <p className="text-sm text-teal-100 text-center">
+        <p className="text-xs sm:text-sm text-teal-100 text-center">
           Review these patterns to help manage your migraines better
         </p>
       </div>
