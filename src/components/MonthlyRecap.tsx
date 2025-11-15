@@ -139,6 +139,13 @@ export function MonthlyRecap() {
     return selectedMonth.month === now.getMonth() && selectedMonth.year === now.getFullYear();
   };
 
+  // Get month name
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  const currentMonthName = monthNames[selectedMonth.month];
+
   if (!stats) {
     return (
       <Card className="p-4 sm:p-6 bg-gradient-to-br from-teal-500 to-cyan-600 text-white">
@@ -151,7 +158,7 @@ export function MonthlyRecap() {
               <h2 className="mb-0.5 text-base sm:text-xl truncate">Monthly Recap</h2>
               <div className="flex items-center gap-1 text-xs sm:text-sm text-teal-100">
                 <Calendar size={14} className="sm:w-4 sm:h-4 flex-shrink-0" />
-                <span className="truncate">{new Date(selectedMonth.year, selectedMonth.month).toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
+                <span className="truncate">{currentMonthName} {selectedMonth.year}</span>
               </div>
             </div>
           </div>

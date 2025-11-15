@@ -23,7 +23,7 @@ import {
   SheetTrigger,
 } from "./components/ui/sheet";
 
-type AppState = "first-screen-saver" | "loading" | "onboarding" | "main";
+type AppState = "loading" | "onboarding" | "main";
 
 export default function App() {
   // Set viewport meta tag for proper mobile rendering
@@ -39,7 +39,7 @@ export default function App() {
     }
   }, []);
 
-  const [appState, setAppState] = useState<AppState>("first-screen-saver");
+  const [appState, setAppState] = useState<AppState>("loading");
   const [activeTab, setActiveTab] = useState("risk");
   const [screenSaverOpen, setScreenSaverOpen] = useState(false);
   const [triggerWeights, setTriggerWeights] = useState<Record<string, number>>({});
@@ -49,26 +49,24 @@ export default function App() {
   const [editingMigraineData, setEditingMigraineData] = useState<any>(undefined);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  // Check if user has completed onboarding before
+  // Check if user has completed onboarding before and handle loading transition
   useEffect(() => {
     const hasCompletedOnboarding = localStorage.getItem("onboarding_completed");
-    if (hasCompletedOnboarding === "true") {
-      setAppState("main");
-      // Load saved weights
-      const savedWeights = localStorage.getItem("trigger_weights");
-      if (savedWeights) {
-        setTriggerWeights(JSON.parse(savedWeights));
-      }
-    }
-  }, []);
-
-  const handleFirstScreenTouch = () => {
-    setAppState("loading");
+    
     // Show loading screen for 2 seconds
     setTimeout(() => {
-      setAppState("onboarding");
+      if (hasCompletedOnboarding === "true") {
+        setAppState("main");
+        // Load saved weights
+        const savedWeights = localStorage.getItem("trigger_weights");
+        if (savedWeights) {
+          setTriggerWeights(JSON.parse(savedWeights));
+        }
+      } else {
+        setAppState("onboarding");
+      }
     }, 2000);
-  };
+  }, []);
 
   const handleOnboardingComplete = (weights: Record<string, number>, trackableFeatures: Record<string, boolean>) => {
     setTriggerWeights(weights);
@@ -108,20 +106,6 @@ export default function App() {
   };
 
   // Render based on app state
-  if (appState === "first-screen-saver") {
-    return (
-      <MobileViewport>
-        <ScreenSaver
-          isOpen={true}
-          onClose={() => {}}
-          onNotificationTap={() => {}}
-          isFirstTime={true}
-          onTouchDismiss={handleFirstScreenTouch}
-        />
-      </MobileViewport>
-    );
-  }
-
   if (appState === "loading") {
     return (
       <MobileViewport>
@@ -227,7 +211,7 @@ export default function App() {
 
       {/* Add Migraine Report Sheet */}
       <Sheet open={addReportOpen} onOpenChange={setAddReportOpen}>
-        <SheetContent side="bottom" className="h-[90vh] rounded-t-3xl">
+        <SheetContent side="bottom" className="h-[90vh] rounded-t-3xl" aria-describedby="add-migraine-description">
           <AddMigraineReport 
             onClose={handleAddReportClose} 
             initialDate={addReportDate} 

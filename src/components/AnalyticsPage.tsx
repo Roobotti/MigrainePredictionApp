@@ -276,7 +276,11 @@ export function AnalyticsPage() {
       const monthlySummary = Object.keys(monthlyData).sort().map(monthKey => {
         const monthReports = monthlyData[monthKey];
         const [year, month] = monthKey.split('-');
-        const monthName = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
+        const monthNames = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+        const monthName = `${monthNames[parseInt(month) - 1]} ${year}`;
         const avgSeverity = monthReports.reduce((sum, r) => sum + r.severity, 0) / monthReports.length;
 
         return {

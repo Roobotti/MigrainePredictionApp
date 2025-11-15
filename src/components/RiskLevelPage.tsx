@@ -155,7 +155,7 @@ export function RiskLevelPage() {
       status: "danger",
       subMetrics: [
         { name: "Atmospheric Pressure", value: "1008 hPa", status: "danger" },
-        { name: "Temperature", value: "28°C", status: "warning" },
+        { name: "Temperature", value: "4°C", status: "warning" },
         { name: "Conditions", value: "Partly Cloudy", status: "normal" }
       ]
     },

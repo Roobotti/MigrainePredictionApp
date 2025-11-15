@@ -7,7 +7,7 @@ import { Card } from "./ui/card";
 import { SheetHeader, SheetTitle, SheetDescription } from "./ui/sheet";
 import { AlertTriangle, Droplets, Brain, Activity, Coffee, Sun, Info, Wine, Dumbbell, Smartphone } from "lucide-react";
 import { toast } from "sonner@2.0.3";
-import { HorizontalPicker } from "./HorizontalPicker";
+import { VerticalPicker } from "./VerticalPicker";
 import {
   Dialog,
   DialogContent,
@@ -456,7 +456,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
                   <span className="text-sm text-slate-700">Water</span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <HorizontalPicker
+                  <VerticalPicker
                     values={Array.from({ length: 51 }, (_, i) => i)}
                     selectedValue={hydration}
                     onValueChange={(value) => setHydration(value as number | null)}
@@ -474,7 +474,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
                   <span className="text-sm text-slate-700">Caffeine</span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <HorizontalPicker
+                  <VerticalPicker
                     values={Array.from({ length: 21 }, (_, i) => i)}
                     selectedValue={caffeine}
                     onValueChange={(value) => setCaffeine(value as number | null)}
@@ -492,7 +492,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
                   <span className="text-sm text-slate-700">Alcohol</span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <HorizontalPicker
+                  <VerticalPicker
                     values={Array.from({ length: 21 }, (_, i) => i)}
                     selectedValue={alcohol}
                     onValueChange={(value) => setAlcohol(value as number | null)}
@@ -510,7 +510,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
                   <span className="text-sm text-slate-700">Exercise</span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <HorizontalPicker
+                  <VerticalPicker
                     values={Array.from({ length: 25 }, (_, i) => i * 0.5)}
                     selectedValue={exercise}
                     onValueChange={(value) => setExercise(value as number | null)}
@@ -528,7 +528,7 @@ export function AddMigraineReport({ onClose, initialDate, isEstimated = false, e
                   <span className="text-sm text-slate-700">Relaxing</span>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <HorizontalPicker
+                  <VerticalPicker
                     values={Array.from({ length: 25 }, (_, i) => i * 0.5)}
                     selectedValue={relaxing}
                     onValueChange={(value) => setRelaxing(value as number | null)}
